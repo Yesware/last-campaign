@@ -1,0 +1,33 @@
+{
+  "name": "last-campaign",
+  "description": "Saves campaign query string parameters into a session cookie so they can be retrieved and passed to your marketing automation system when needed.",
+  "main": "dist/last-campaign.js",
+  "authors": [
+    "Luke Bussey <luke@yesware.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "campaign",
+    "utm",
+    "utm_campaign",
+    "utm_source",
+    "utm_medium",
+    "utm_term",
+    "utm_content"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "homepage": "https://github.com/Yesware/last-campaign",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Yesware/last-campaign.git"
+  },
+  "ignore": [
+    "index.js",
+    ".*",
+    "package.json",
+    "node_modules",
+    "test"
+  ]
+}

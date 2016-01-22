@@ -1,0 +1,45 @@
+{
+  "name": "last-campaign",
+  "version": "1.0.0",
+  "description": "Saves campaign query string parameters into a session cookie so they can be retrieved and passed to your marketing automation system when needed.",
+  "homepage": "https://github.com/Yesware/last-campaign",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Yesware/last-campaign.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "npm run build && npm run minify",
+    "build": "browserify --standalone lastCampaign index.js -o dist/last-campaign.js",
+    "watch": "watchify --standalone lastCampaign index.js -o dist/last-campaign.js",
+    "minify": "uglifyjs dist/last-campaign.js -o dist/last-campaign.min.js",
+    "test": "jshint index.js && mocha"
+  },
+  "authors": [
+    "Luke Bussey <luke@yesware.com>"
+  ],
+  "keywords": [
+    "campaign",
+    "utm",
+    "utm_campaign",
+    "utm_source",
+    "utm_medium",
+    "utm_term",
+    "utm_content"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cookie": "^0.2.3",
+    "deepmerge": "^0.2.10",
+    "querystring": "^0.2.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "chai": "^3.4.1",
+    "jsdom": "^7.2.2",
+    "jshint": "^2.9.1",
+    "mocha": "^2.3.4",
+    "uglify-js": "^2.6.1",
+    "watchify": "^3.7.0"
+  }
+}
