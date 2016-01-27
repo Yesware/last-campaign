@@ -39,6 +39,18 @@ An array of additional query string parameters to save. E.g. `['gclid']`.
 
 Specify if the default parameters, `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` should be saved. Default `true`
 
+### `domain` (String)
+
+Specify a domain to set cookie on. If you want this to work across all of your sub-domains, set this to your domain name prefixed with a period. E.g. `.yesware.com`
+
+Default `null`
+
+### `path` (String)
+
+Cookie path.
+
+Default `/`
+
 ## Examples
 
 ### Save `gclid` AdWords ID in addition to default parameters

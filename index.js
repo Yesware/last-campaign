@@ -33,8 +33,11 @@ function saveLastCampaign(opts) {
             'utm_medium',
             'utm_term',
             'utm_content'
-        ]
+        ],
+        path: '/',
+        domain: null
     };
+
     var pageQueryString = getQueryString();
     var data;
 
@@ -61,7 +64,10 @@ function saveLastCampaign(opts) {
     // Create the cookies
     options.params.forEach(function (key) {
         if (data[key]) {
-            setCookie(cookie.serialize(options.prefix + key, data[key]));
+            setCookie(cookie.serialize(options.prefix + key, data[key], {
+                domain: options.domain,
+                path: options.path
+            }));
         }
     });
 

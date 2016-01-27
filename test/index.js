@@ -5,7 +5,7 @@ var lastCampaign = require('..');
 beforeEach(function () {
 
     global.document = jsdom('', {
-        url: 'http://server/'
+        url: 'http://www.yesware.com/'
     });
     global.window = global.document.defaultView;
 
@@ -22,7 +22,7 @@ describe('lastCampaign', function () {
     describe('with a query string', function () {
 
         beforeEach(function () {
-            window.location.href = '/?foo=bar&utm_campaign=test&utm_medium=test&utm_source=test&utm_term=test&utm_content=test';
+            window.location.href = '/path/?foo=bar&utm_campaign=test&utm_medium=test&utm_source=test&utm_term=test&utm_content=test';
         });
 
         it('should only set the correct cookies', function () {
@@ -95,9 +95,62 @@ describe('lastCampaign', function () {
             expect(document.cookie).to.include('_utm_content=test');
         });
 
+        it('should set cookies with the correct sub-domain', function () {
+
+            lastCampaign({
+                domain: '.yesware.com'
+            });
+
+            expect(document.cookie).to.not.include('foo=bar');
+            expect(document.cookie).to.include('utm_campaign=test');
+            expect(document.cookie).to.include('utm_medium=test');
+            expect(document.cookie).to.include('utm_source=test');
+            expect(document.cookie).to.include('utm_term=test');
+            expect(document.cookie).to.include('utm_content=test');
+        });
+
+        it('should set cookies with the correct sub-domain', function () {
+
+            lastCampaign({
+                domain: '.notyesware.com'
+            });
+
+            expect(document.cookie).to.not.include('foo=bar');
+            expect(document.cookie).to.not.include('utm_campaign=test');
+            expect(document.cookie).to.not.include('utm_medium=test');
+            expect(document.cookie).to.not.include('utm_source=test');
+            expect(document.cookie).to.not.include('utm_term=test');
+            expect(document.cookie).to.not.include('utm_content=test');
+        });
+
+        it('should set cookies with the correct path', function () {
+
+            lastCampaign({
+                path: '/path/'
+            });
+
+            expect(document.cookie).to.not.include('foo=bar');
+            expect(document.cookie).to.include('utm_campaign=test');
+            expect(document.cookie).to.include('utm_medium=test');
+            expect(document.cookie).to.include('utm_source=test');
+            expect(document.cookie).to.include('utm_term=test');
+            expect(document.cookie).to.include('utm_content=test');
+        });
+
+        it('should set cookies with the correct path', function () {
+
+            lastCampaign({
+                path: '/different-path/'
+            });
+
+            expect(document.cookie).to.not.include('foo=bar');
+            expect(document.cookie).to.not.include('utm_campaign=test');
+            expect(document.cookie).to.not.include('utm_medium=test');
+            expect(document.cookie).to.not.include('utm_source=test');
+            expect(document.cookie).to.not.include('utm_term=test');
+            expect(document.cookie).to.not.include('utm_content=test');
+        });
+
     });
 
 });
-
-
-
