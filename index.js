@@ -39,7 +39,8 @@ function saveLastCampaign(opts) {
     };
 
     var pageQueryString = getQueryString();
-    var data;
+    var data = {};
+    var cookieOptions = {};
 
     // Quit if nothing to do
     if (pageQueryString.length === 0) {
@@ -61,13 +62,20 @@ function saveLastCampaign(opts) {
     // Parse the query string
     data = querystring.parse(pageQueryString);
 
+    // Set default cookie options
+    cookieOptions = {
+        domain: options.domain,
+        path: options.path
+    };
+
     // Create the cookies
     options.params.forEach(function (key) {
+        // First clear any existing cookies
+        setCookie(cookie.serialize(options.prefix + key, null, cookieOptions));
+
+        // Save the query string parameter
         if (data[key]) {
-            setCookie(cookie.serialize(options.prefix + key, data[key], {
-                domain: options.domain,
-                path: options.path
-            }));
+            setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
         }
     });
 

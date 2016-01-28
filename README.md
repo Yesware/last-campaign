@@ -2,7 +2,7 @@
 
 Saves the last campaign (utm) query string parameters found on the current URL into a session cookie; so that they can be passed to your marketing automation system at any time during the users session.
 
-By default, only `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` are saved. Extra parameters can also be saved by passing them in via the `options.params` object.
+By default, only `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` are saved. Extra parameters can also be saved by passing them in via the `options.params` object. If the query string contains any of the parameters to be saved, a new session is assumed and previously set cookies will be removed.
 
 `lastCampaign()` should be called on each page view.
 
