@@ -71,12 +71,15 @@ function saveLastCampaign(opts) {
 
     // Create the cookies
     options.params.forEach(function (key) {
-        // First clear any existing cookies
-        setCookie(cookie.serialize(options.prefix + key, null, cookieOptions));
-
-        // Save the query string parameter
         if (data[key]) {
             setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
+        } else {
+
+            // Remove cookies for values that don't exist
+            setCookie(cookie.serialize(options.prefix + key, '', merge(cookieOptions, {
+                expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT')
+            })));
+
         }
     });
 

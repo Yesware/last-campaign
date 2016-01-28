@@ -1,6 +1,6 @@
 {
   "name": "last-campaign",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Saves campaign query string parameters into a session cookie so they can be retrieved and passed to your marketing automation system when needed.",
   "homepage": "https://github.com/Yesware/last-campaign",
   "repository": {
