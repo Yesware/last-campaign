@@ -68,20 +68,35 @@ function saveLastCampaign(opts) {
         path: options.path
     };
 
+    var removed = false;
+
     // Create the cookies
     options.params.forEach(function (key) {
         if (data[key]) {
+
+            // param found in querystring so remove all necessary cookies first
+            if (!removed) {
+                removeCookies(options, cookieOptions);
+                removed = true;
+            }
+
             setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
-        } else {
-
-            // Remove cookies for values that don't exist
-            setCookie(cookie.serialize(options.prefix + key, '', merge(cookieOptions, {
-                expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT')
-            })));
-
         }
     });
 
+}
+
+/**
+ * Remove all cookies matching options.params
+ * @param  {Object} options
+ * @private
+ */
+function removeCookies(options, cookieOptions) {
+    options.params.forEach(function (key) {
+        setCookie(cookie.serialize(options.prefix + key, '', merge(cookieOptions, {
+            expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT')
+        })));
+    });
 }
 
 /**
