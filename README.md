@@ -35,6 +35,10 @@ Cookie name prefix. Default `''`
 
 An array of additional query string parameters to save. E.g. `['gclid']`.
 
+### `data` (Object)
+
+An object of additional values to save. Values are only saved once per session.
+
 ### `defaults` (Boolean)
 
 Specify if the default parameters, `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` should be saved. Default `true`
@@ -66,6 +70,15 @@ lastCampaign({
     prefix: '_',
     defaults: false,
     params: ['foo']
+});
+```
+
+### Save `foo` value in addition to default parameters
+```
+lastCampaign({
+    data: {
+        foo: 'bar'
+    }
 });
 ```
 
