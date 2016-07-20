@@ -55,6 +55,8 @@ function saveLastCampaign(opts) {
         options = merge(options, opts);
     }
 
+    var dataKeys = Object.keys(options.data);
+
     // Set default cookie options
     cookieOptions = {
         domain: options.domain,
@@ -84,15 +86,14 @@ function saveLastCampaign(opts) {
     }
 
     // Save the data object
-    if (Object.keys(options.data).length !== 0) {
-
-        for (var key in options.data) {
+    if (dataKeys.length !== 0) {
+        dataKeys.forEach(function (key) {
 
             // Create the cookie if it doesn't exist
             if (!getCookie(key)) {
                 setCookie(cookie.serialize(options.prefix + key, options.data[key], cookieOptions));
             }
-        }
+        });
     }
 
 }
