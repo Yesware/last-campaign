@@ -8,6 +8,8 @@ By default, only `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and 
 
 Note: This is currently a browser only module because it reads the query string from `window.location.search` and sets cookies via the `document.cookie`. It could however, easily be modified to run as an express middleware and work on the server side.
 
+Version 2 of last-campaign by default now sets cookies with a default session timeout of 30 minutes rather than a session cookie.
+
 ## Installation & Usage
 
 ### NPM
@@ -26,6 +28,12 @@ lastCampaign();
 ```
 
 ## Options
+
+### `timeout` (Number)
+
+Default session timeout in minutes. This should match the session timeout used in Google Analyutcs. Default `30`
+
+Passing in `null` will disable the session timeout and revert to using a session cookie. E.g. `timeout: null`
 
 ### `prefix` (String)
 
