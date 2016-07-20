@@ -34,6 +34,7 @@ function saveLastCampaign(opts) {
             'utm_term',
             'utm_content'
         ],
+        data: {},
         path: '/',
         domain: null
     };
@@ -41,11 +42,6 @@ function saveLastCampaign(opts) {
     var pageQueryString = getQueryString();
     var data = {};
     var cookieOptions = {};
-
-    // Quit if nothing to do
-    if (pageQueryString.length === 0) {
-        return;
-    }
 
     // Remove default parameters if necessary
     if (typeof opts === 'object') {
@@ -59,8 +55,7 @@ function saveLastCampaign(opts) {
         options = merge(options, opts);
     }
 
-    // Parse the query string
-    data = querystring.parse(pageQueryString);
+    var dataKeys = Object.keys(options.data);
 
     // Set default cookie options
     cookieOptions = {
@@ -68,21 +63,38 @@ function saveLastCampaign(opts) {
         path: options.path
     };
 
-    var removed = false;
+    // Parse the query string
+    if (pageQueryString.length !== 0) {
 
-    // Create the cookies
-    options.params.forEach(function (key) {
-        if (data[key]) {
+        data = querystring.parse(pageQueryString);
 
-            // param found in querystring so remove all necessary cookies first
-            if (!removed) {
-                removeCookies(options, cookieOptions);
-                removed = true;
+        var removed = false;
+
+        // Create the cookies
+        options.params.forEach(function (key) {
+            if (data[key]) {
+
+                // param found in querystring so remove all necessary existing cookies first
+                if (!removed) {
+                    removeCookies(options, cookieOptions);
+                    removed = true;
+                }
+
+                setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
             }
+        });
+    }
 
-            setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
-        }
-    });
+    // Save the data object
+    if (dataKeys.length !== 0) {
+        dataKeys.forEach(function (key) {
+
+            // Create the cookie if it doesn't exist
+            if (!getCookie(key)) {
+                setCookie(cookie.serialize(options.prefix + key, options.data[key], cookieOptions));
+            }
+        });
+    }
 
 }
 
@@ -110,6 +122,7 @@ function removeCookies(options, cookieOptions) {
 function getQueryString() {
     return window.location.search.substring(1);
 }
+
 /**
  * Sets a browser cookie given a valid cookie string.
  *
@@ -120,4 +133,25 @@ function getQueryString() {
  */
 function setCookie(cookie) {
     document.cookie = cookie;
+}
+
+/**
+ * Returns cookie value
+ *
+ * @param {string} name name of cookie
+ * @return {string} token
+ * @private
+ */
+function getCookie(name) {
+    if (arguments.length === 0 && typeof opts !== 'string') {
+        return;
+    }
+
+    var match = document.cookie.match('(?:^|; )' + name + '=([^;]+)');
+
+    if (match) {
+        return match[1];
+    } else {
+        return '';
+    }
 }
