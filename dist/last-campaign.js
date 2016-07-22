@@ -101,6 +101,8 @@ function saveLastCampaign(opts) {
                     removed = true;
                 }
 
+                // Merge expires in to prevent the following error:
+                // Uncaught TypeError: opt.expires.toUTCString is not a function
                 setCookie(options.prefix + key, data[key], merge(cookieOptions, {
                     expires: expires
                 }));
@@ -111,6 +113,11 @@ function saveLastCampaign(opts) {
     // Save the data object
     if (dataKeys.length !== 0) {
         dataKeys.forEach(function (key) {
+
+            // Skip undefined, null, or empty values
+            if (typeof options.data[key] === 'undefined' || options.data[key] === null || options.data[key] === '') {
+                return;
+            }
 
             // Create the cookie if it doesn't exist
             if (!getCookie(key)) {
