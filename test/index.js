@@ -236,6 +236,36 @@ describe('lastCampaign', function () {
             expect(document.cookie).to.include('baz=qux');
         });
 
+        it('should not set null, undefined or empty cookies', function () {
+
+            var qux;
+
+            lastCampaign({
+                defaults: false,
+                data: {
+                    baz: qux,
+                    wibble: null,
+                    wobble: '',
+                    wubble: 0,
+                    fibble: true,
+                    fubble: false
+                }
+            });
+
+            expect(document.cookie).to.not.include('foo=bar');
+            expect(document.cookie).to.not.include('utm_campaign=test');
+            expect(document.cookie).to.not.include('utm_medium=test');
+            expect(document.cookie).to.not.include('utm_source=test');
+            expect(document.cookie).to.not.include('utm_term=test');
+            expect(document.cookie).to.not.include('utm_content=test');
+            expect(document.cookie).to.not.include('baz');
+            expect(document.cookie).to.not.include('wibble');
+            expect(document.cookie).to.not.include('wobble');
+            expect(document.cookie).to.include('wubble');
+            expect(document.cookie).to.include('fibble');
+            expect(document.cookie).to.include('fubble');
+        });
+
     });
 
 });

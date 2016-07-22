@@ -111,6 +111,11 @@ function saveLastCampaign(opts) {
     if (dataKeys.length !== 0) {
         dataKeys.forEach(function (key) {
 
+            // Skip undefined, null, or empty values
+            if (typeof options.data[key] === 'undefined' || options.data[key] === null || options.data[key] === '') {
+                return;
+            }
+
             // Create the cookie if it doesn't exist
             if (!getCookie(key)) {
                 setCookie(options.prefix + key, options.data[key], merge(cookieOptions, {
