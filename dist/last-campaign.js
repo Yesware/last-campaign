@@ -37,12 +37,15 @@ function saveLastCampaign(opts) {
         ],
         data: {},
         path: '/',
-        domain: null
+        domain: null,
+        timeout: 30
     };
 
     var pageQueryString = getQueryString();
     var data = {};
     var cookieOptions = {};
+    var now = new Date();
+    var expires;
 
     // Remove default parameters if necessary
     if (typeof opts === 'object') {
@@ -64,6 +67,23 @@ function saveLastCampaign(opts) {
         path: options.path
     };
 
+    // Set cookie expiration and advance expiration for existing cookies
+    if (options.timeout) {
+        expires = new Date(now.setMinutes(now.getMinutes() + options.timeout));
+
+        // querystring param cookies
+        options.params.forEach(function (key) {
+            updateExpiration(options.prefix + key, expires, cookieOptions);
+        });
+
+        // data object cookies
+        if (dataKeys.length !== 0) {
+            dataKeys.forEach(function (key) {
+                updateExpiration(options.prefix + key, expires, cookieOptions);
+            });
+        }
+    }
+
     // Parse the query string
     if (pageQueryString.length !== 0) {
 
@@ -81,7 +101,11 @@ function saveLastCampaign(opts) {
                     removed = true;
                 }
 
-                setCookie(cookie.serialize(options.prefix + key, data[key], cookieOptions));
+                // Merge expires in to prevent the following error:
+                // Uncaught TypeError: opt.expires.toUTCString is not a function
+                setCookie(options.prefix + key, data[key], merge(cookieOptions, {
+                    expires: expires
+                }));
             }
         });
     }
@@ -97,7 +121,9 @@ function saveLastCampaign(opts) {
 
             // Create the cookie if it doesn't exist
             if (!getCookie(key)) {
-                setCookie(cookie.serialize(options.prefix + key, options.data[key], cookieOptions));
+                setCookie(options.prefix + key, options.data[key], merge(cookieOptions, {
+                    expires: expires
+                }));
             }
         });
     }
@@ -111,9 +137,9 @@ function saveLastCampaign(opts) {
  */
 function removeCookies(options, cookieOptions) {
     options.params.forEach(function (key) {
-        setCookie(cookie.serialize(options.prefix + key, '', merge(cookieOptions, {
+        document.cookie = cookie.serialize(options.prefix + key, '', merge(cookieOptions, {
             expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT')
-        })));
+        }));
     });
 }
 
@@ -134,17 +160,19 @@ function getQueryString() {
  *
  * E.g. "foo=bar; httpOnly"
  *
- * @param {string} cookie - a valid cookie string
+ * @param {string} name - name of cookie
+ * @param {string} value - value of cookie
+ * @param {object} options - object containing cookie options
  * @private
  */
-function setCookie(cookie) {
-    document.cookie = cookie;
+function setCookie(name, value, options) {
+    document.cookie = cookie.serialize(name, value, options);
 }
 
 /**
  * Returns cookie value
  *
- * @param {string} name name of cookie
+ * @param {string} name - name of cookie
  * @return {string} token
  * @private
  */
@@ -159,6 +187,24 @@ function getCookie(name) {
         return match[1];
     } else {
         return '';
+    }
+}
+
+/**
+ * Update cookie expiration
+ *
+ * @param {string} name - name of cookie
+ * @param {date} expires - expiration date/time of cookie
+ * @param {object} options - object containing cookie options
+ * @private
+ */
+function updateExpiration(name, expires, options) {
+    var existingValue = getCookie(name);
+
+    if (existingValue) {
+        setCookie(name, existingValue, merge(options, {
+            expires: expires
+        }));
     }
 }
 
